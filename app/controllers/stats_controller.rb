@@ -41,17 +41,16 @@ class StatsController < ApplicationController
 
   	users = []
 
-		ActiveRecord::Base.connection.execute("select t1.member_id 
-				from member_roles as t1
-				inner join members as t2
-				on t1.member_id = t2.id
-				inner join roles as t3
-				on t1.role_id = t3.id
+		ActiveRecord::Base.connection.execute("select t3.user_id from roles as t1 
+				INNER JOIN member_roles as t2 on
+				t1.id = t2.role_id
+				inner join members as t3
+				on t3.id = t2.member_id
 				inner join users as t4
-				where t1.member_id = t4.id
-				and t3.assignable = 't'
-				group by t1.member_id").each do |row|
-					users << User.find(row["member_id"])
+				on t3.user_id = t4.id
+				where t1.assignable = 't' and t4.type = 'User'
+				group by t3.user_id").each do |row|
+					users << User.find(row["user_id"])
 
 				end
 
@@ -107,18 +106,18 @@ class StatsController < ApplicationController
     joins = options.delete(:joins)
 
     where = "#{Issue.table_name}.#{select_field}=j.id"
-
-    ActiveRecord::Base.connection.select_all("select    s.id as status_id, 
-                                                s.is_closed as closed, 
-                                                j.id as #{select_field},
-                                                count(#{Issue.table_name}.id) as total 
-                                              from 
-                                                  #{Issue.table_name}, #{Project.table_name}, #{IssueStatus.table_name} s, #{joins} j
-                                              where 
-                                                #{Issue.table_name}.status_id=s.id 
-                                                and #{where}
-                                               
-                                              group by s.id, s.is_closed, j.id")
+    sql = "select    s.id as status_id, 
+            s.is_closed as closed, 
+            j.id as #{select_field},
+            count(#{Issue.table_name}.id) as total 
+          from 
+              #{Issue.table_name}, #{Project.table_name}, #{IssueStatus.table_name} s, #{joins} j
+          where 
+            #{Issue.table_name}.status_id=s.id 
+            and #{where}
+          group by s.id, s.is_closed, j.id"
+          puts "asd #{sql}"
+    ActiveRecord::Base.connection.select_all(sql)
   end
 
 
