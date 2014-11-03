@@ -4,11 +4,11 @@ require 'redmine_stats/redmine_stats'
 
 Redmine::Plugin.register :redmine_stats do
   name 'Redmine Stats plugin'
-  author 'Author name'
-  description 'This is a plugin for Redmine'
+  author 'Luis Fontes <mail.fontes@gmail.com>'
+  description 'Plugin to display global statistics of projects'
   version '0.0.1'
-  url 'http://example.com/path/to/plugin'
-  author_url 'http://example.com/about'
+  #url 'http://example.com/path/to/plugin'
+  #author_url 'http://example.com/about'
 
 
   permission :access_statistics, :stats => :index
