@@ -4,7 +4,10 @@
 
 <div class="splitcontentleft">
 
-<div><canvas id="chart_left"  width="400" height="200"></canvas></div>
+<div>
+<h3><%= l(:issue_activity) %></h3>
+<canvas id="chart_left"  width="400" height="200"></canvas>
+</div>
 <br>
 <h3><%=l(:field_tracker)%></h3>
 <%= render :partial => 'simple', :locals => { :data => @issues_by_tracker, :field_name => "tracker_id", :rows => @trackers } %>
@@ -16,10 +19,10 @@
 
 
 <div class="splitcontentright">
-<div><canvas id="chart_right"  width="400" height="200"></canvas></div>
 <h3><%=l(:field_priority)%></h3>
 <%= render :partial => 'simple', :locals => { :data => @issues_by_priority, :field_name => "priority_id", :rows => @priorities } %>
 <br />
+<div><canvas id="chart_right"  width="400" height="200"></canvas></div>
 <h3><%=l(:field_author)%></h3>
 <%= render :partial => 'simple', :locals => { :data => @issues_by_author, :field_name => "author_id", :rows => @authors } %>
 <br />
@@ -76,7 +79,7 @@
 		            	total
 
 		            }.to_json %>
-		        },
+		        } ,
 		        {
 		            label: "Opened Issues",
 					fillColor : "rgba(92,184,92,0.4)",
