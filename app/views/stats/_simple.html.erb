@@ -1,0 +1,19 @@
+<table class="list issue-report">
+<thead><tr>
+<th></th>
+<th><%=l(:label_open_issues_plural)%></th>
+<th><%=l(:label_closed_issues_plural)%></th>
+<th><%=l(:label_total)%></th>
+</tr></thead>
+<tbody>
+<% for row in rows %>
+<tr class="<%= cycle("odd", "even") %>">
+  <td class="name"><%= link_to h(row.name), aggregate_path(@project, field_name, row) %></td>
+  <td><%= aggregate data, { field_name => row.id, "closed" => 0 }%></td>
+  <td><%= aggregate data, { field_name => row.id, "closed" => 1 }%></td>
+  <td><%= aggregate data, { field_name => row.id }%></td>
+</tr>
+<% end %>
+</tbody>
+</table>
+<% reset_cycle %>
