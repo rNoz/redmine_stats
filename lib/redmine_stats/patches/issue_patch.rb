@@ -21,6 +21,21 @@ module RedmineStats
             where(['closed_on >= ? AND closed_on < ?', date, date + 1])
           end
 
+          def top5
+
+            issues = []
+
+            Journal.select("journalized_id, count(journalized_id) AS count").
+            group("journalized_id").
+            order("count DESC").
+            limit(5).each do |row|
+              issues << Issue.find(row.issue.id)
+            end
+
+            issues
+            
+          end
+
         end
     
         module InstanceMethods

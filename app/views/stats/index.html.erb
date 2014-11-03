@@ -3,13 +3,13 @@
 <%
 
 red_color = 	'fillColor : "#FF0000",
-				strokeColor : "rgba(197,63,59,0.6)",
+				strokeColor : "rgba(197,63,59,0.5)",
 				pointColor : "rgba(201,48,44,1)",
 				pointStrokeColor : "#fff",
 				pointHighlightFill : "#fff",
 				pointHighlightStroke : "rgba(220,220,220,1)",'
 
-green_color = 	'fillColor : "rgba(92,184,92,0.4)",
+green_color = 	'fillColor : "rgba(92,184,92,0.5)",
 				strokeColor : "rgba(68,157,68,1)",
 				pointColor : "rgba(151,187,205,1)",
 				pointStrokeColor : "#fff",
@@ -31,8 +31,16 @@ green_color = 	'fillColor : "rgba(92,184,92,0.4)",
 <h3><%=l(:field_assigned_to)%></h3><br>
 <canvas style="display: block; margin: 0 auto;" id="chart_assignee"  width="400" height="150"></canvas><br>
 <%= render :partial => 'simple', :locals => { :data => @issues_by_assigned_to, :field_name => "assigned_to_id", :rows => @assignees } %>
-<br />
+<br /> <br />
+<h3><%= l(:more_active_issues)%></h3><br>
+<%= render :partial => 'issues/list_simple', :locals => { :issues => @top5 } %>
 </div>
+
+
+
+
+
+
 <div class="splitcontentright">
 <h3><%=l(:field_priority)%></h3><br>
 <canvas style="display: block; margin: 0 auto;" id="chart_right"  width="400" height="200"></canvas><br><br><br><br>
@@ -42,6 +50,7 @@ green_color = 	'fillColor : "rgba(92,184,92,0.4)",
 <canvas style="display: block; margin: 0 auto;" id="chart_author"  width="400" height="150"></canvas><br>
 <%= render :partial => 'simple', :locals => { :data => @issues_by_author, :field_name => "author_id", :rows => @authors } %>
 <br />
+
 </div>
 
 <script>

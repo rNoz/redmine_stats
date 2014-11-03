@@ -1,9 +1,11 @@
 class StatsController < ApplicationController
   unloadable
-
+  
 
 
   def index
+
+  	check_filter
 
   	@statuses = IssueStatus.all
   	@trackers = Tracker.all
@@ -11,7 +13,6 @@ class StatsController < ApplicationController
   	@assignees = assignable_users
   	@authors = author_users
 
-  	puts "xxx #{@assignees}"
 
   	@issues_by_tracker = by_tracker
   	@issues_by_priority = by_priority
@@ -20,8 +21,22 @@ class StatsController < ApplicationController
 
   	@issues_last_days = by_days
 
+  	@top5 = Issue.top5
+
   end
 
+
+  def check_filter
+  	if (params[:set_filter])
+  		respond_to do |format|
+      if @field
+        format.html {}
+      else
+        format.html { redirect_to :controller => 'issues', :action => 'index', :params => params}
+      end
+    end
+  	end
+  end
 
   def author_users
   	
@@ -116,7 +131,6 @@ class StatsController < ApplicationController
             #{Issue.table_name}.status_id=s.id 
             and #{where}
           group by s.id, s.is_closed, j.id"
-          puts "asd #{sql}"
     ActiveRecord::Base.connection.select_all(sql)
   end
 
