@@ -21,7 +21,21 @@ module RedmineStats
             where(['closed_on >= ? AND closed_on < ?', date, date + 1])
           end
 
-          def top5
+          def created_between(begin_date, end_date)
+            begin_date = begin_date.to_datetime
+            end_date = (end_date + 1.day).to_datetime
+            
+            where(['created_on >= ? AND created_on < ?', begin_date, end_date])
+          end
+
+          def closed_between(begin_date, end_date)
+            begin_date = begin_date.to_datetime
+            end_date = (end_date + 1.day).to_datetime
+
+            where(['closed_on >= ? AND closed_on < ?', begin_date, end_date])
+          end
+
+          def top5(params)
 
             issues = []
 
@@ -33,7 +47,7 @@ module RedmineStats
             end
 
             issues
-            
+
           end
 
         end

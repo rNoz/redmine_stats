@@ -6,6 +6,7 @@ class StatsController < ApplicationController
   def index
 
   	check_filter
+    @dates = date_interval
 
   	@statuses = IssueStatus.all
   	@trackers = Tracker.all
@@ -14,27 +15,54 @@ class StatsController < ApplicationController
   	@authors = author_users
 
 
-  	@issues_by_tracker = by_tracker
-  	@issues_by_priority = by_priority
-  	@issues_by_assigned_to = by_assigned_to
-  	@issues_by_author = by_author
-
-  	@issues_last_days = by_days
-
-  	@top5 = Issue.top5
+  	@issues_by_tracker = by_tracker(@dates)
+  	@issues_by_priority = by_priority(@dates)
+  	@issues_by_assigned_to = by_assigned_to(@dates)
+  	@issues_by_author = by_author(@dates)
+  	@issues_last_days = by_days(@dates)
+  	@top5 = Issue.top5(@dates)
 
   end
 
+  def date_interval
+
+    begin_date = nil
+    end_date = nil
+
+    date = Date.today
+
+    unless params[:active_filter].nil?
+      case params[:active_filter]
+        when "current_week"
+          begin_date = date.beginning_of_week
+          end_date = date.end_of_week
+        when "last_week"
+          date -= 1.week
+          begin_date = date.beginning_of_week
+          end_date = date.end_of_week
+        when "current_month"
+          begin_date = date.beginning_of_month
+          end_date = date.end_of_month
+         when "last_month"
+          date -= 1.month
+          begin_date = date.beginning_of_month
+          end_date = date.end_of_month
+      end
+    end
+
+    {begin_date: begin_date, end_date: end_date}
+
+  end
 
   def check_filter
   	if (params[:set_filter])
   		respond_to do |format|
-      if @field
-        format.html {}
-      else
-        format.html { redirect_to :controller => 'issues', :action => 'index', :params => params}
+        if @field
+          format.html {}
+        else
+          format.html { redirect_to :controller => 'issues', :action => 'index', :params => params}
+        end
       end
-    end
   	end
   end
 
@@ -73,45 +101,70 @@ class StatsController < ApplicationController
 
   end
 
-  def by_days
+  def by_days(params)
 
   	created = []
   	closed = []
   	dates = []
 
-  	7.times do |days_before|
-  		date = Date.today - days_before
-  		created << Issue.created_on(date).count
-  		closed << Issue.closed_on(date).count
-  		dates << date.strftime("%A")
-  	end
+    begin_date = params[:begin_date]
+    end_date = params[:end_date]
 
-  	created.reverse!
-  	closed.reverse!
-  	dates.reverse!
+    if(begin_date.nil? and end_date.nil?)
+
+    	7.times do |days_before|
+    		date = Date.today - days_before
+    		created << Issue.created_on(date).count
+    		closed << Issue.closed_on(date).count
+    		dates << date.strftime("%A")
+
+        created.reverse!
+        closed.reverse!
+        dates.reverse!
+
+    	end
+      
+    else
+    
+      (begin_date..end_date).to_a.each do|d| 
+        created << Issue.created_on(d).count
+        closed << Issue.closed_on(d).count
+        dates << d.strftime("%A, %d") 
+      end
+    end
+
+  	
 
   	{created:created, closed:closed, dates:dates}
 
   end
 
-   def by_author
+   def by_author(params)
     count_and_group_by(:field => 'author_id',
-                       :joins => User.table_name)
+                       :joins => User.table_name,
+                       :begin_date  => params[:begin_date],
+                       :end_date    => params[:end_date])
   end
 
-  def by_assigned_to
+  def by_assigned_to(params)
     count_and_group_by(:field => 'assigned_to_id',
-                       :joins => User.table_name)
+                       :joins => User.table_name,
+                       :begin_date  => params[:begin_date],
+                       :end_date    => params[:end_date])
   end
 
-  def by_priority
+  def by_priority(params)
     count_and_group_by(:field => 'priority_id',
-                       :joins => IssuePriority.table_name)
+                       :joins => IssuePriority.table_name,
+                       :begin_date  => params[:begin_date],
+                       :end_date    => params[:end_date])
   end
 
-  def by_tracker
+  def by_tracker(params)
     count_and_group_by(:field => 'tracker_id',
-                       :joins => Tracker.table_name)
+                       :joins => Tracker.table_name,
+                       :begin_date  => params[:begin_date],
+                       :end_date    => params[:end_date])
   end
 
 
@@ -119,8 +172,23 @@ class StatsController < ApplicationController
 
     select_field = options.delete(:field)
     joins = options.delete(:joins)
+    begin_date = options.delete(:begin_date)
+    end_date = options.delete(:end_date)
 
-    where = "#{Issue.table_name}.#{select_field}=j.id"
+    if begin_date.nil? and end_date.nil?
+      where = "#{Issue.table_name}.#{select_field}=j.id"
+    else
+      begin_date = begin_date.to_datetime
+      end_date = (end_date + 1.day).to_datetime
+      
+      where = "#{Issue.table_name}.#{select_field}=j.id 
+          AND #{Issue.table_name}.created_on >= '#{begin_date}' 
+          AND #{Issue.table_name}.created_on <= '#{end_date}'"
+    
+    end
+      
+
+    
     sql = "select    s.id as status_id, 
             s.is_closed as closed, 
             j.id as #{select_field},
@@ -131,6 +199,8 @@ class StatsController < ApplicationController
             #{Issue.table_name}.status_id=s.id 
             and #{where}
           group by s.id, s.is_closed, j.id"
+    
+    puts "aaa #{sql}"
     ActiveRecord::Base.connection.select_all(sql)
   end
 

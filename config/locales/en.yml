@@ -1,6 +1,13 @@
 # English strings go here for Rails i18n
 en:
-  label_stats: Statistics
-  issue_activity: Issue Activity
-  new_issues_priorities: New Issue Priorities
-  more_active_issues: More active issues
+  label_stats: 													Statistics
+  label_issue_activity: 										Issue Activity
+  label_new_issues_priorities:									New Issue Priorities
+  label_more_active_issues: 									More active issues
+  label_filters: 												Filters
+
+  label_current_week: 											Current Week
+  label_current_month: 											Current Month
+  label_last_week: 												Last Week
+  label_last_month: 											Last Month
+  label_begining_of_time: 										Since Beginning of Time
