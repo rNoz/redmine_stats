@@ -46,8 +46,18 @@ module RedmineStats
           def top5(params)
 
             issues = []
+            where = ""
 
+            unless params[:begin_date].nil?
+              puts "ccc #{params}"
+              begin_date = params[:begin_date].to_datetime
+              end_date = (params[:end_date] + 1.day).to_datetime
+              
+              where = ['created_on >= ? AND created_on < ?', begin_date, end_date] 
+
+            end
             Journal.select("journalized_id, count(journalized_id) AS count").
+            where(where).
             group("journalized_id").
             order("count DESC").
             limit(5).each do |row|
