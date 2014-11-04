@@ -1,24 +1,29 @@
 <h3><%= l(:label_filters) %></h3>
 
+<% unless params["active_filter"]=="all" %>
+
 <b><%= l(:label_filtering_between) %></b> <br />
 <b><%= @dates[:begin_date]%></b>
 <%= l(:label_and) %>
 <b><%= @dates[:end_date]%></b>
 <br><br>
+
+<% end %>
+
 <%= link_to l(:label_begining_of_time), {active_filter: "all"}, 
-	class: ("selected" if params["active_filter"].nil? or params["active_filter"]=="all") 			%> <br />
+	class: ("selected" if params["active_filter"].nil? or params["active_filter"]=="all") %> <br />
 
 <%= link_to l(:label_current_week), 	{active_filter: "current_week"},
-	class: ("selected" if params["active_filter"].nil? or params["active_filter"]=="current_week") 	%> <br />
+	class: ("selected" if params["active_filter"]=="current_week") 	%> <br />
 
 <%= link_to l(:label_last_week), 		{active_filter: "last_week"},
-	class: ("selected" if params["active_filter"].nil? or params["active_filter"]=="last_week") 	%> <br />
+	class: ("selected" if params["active_filter"]=="last_week") 	%> <br />
 
 <%= link_to l(:label_current_month), 	{active_filter: "current_month"},
-	class: ("selected" if params["active_filter"].nil? or params["active_filter"]=="current_month") %> <br />
+	class: ("selected" if params["active_filter"]=="current_month") %> <br />
 
 <%= link_to l(:label_last_month), 		{active_filter: "last_month"},
-	class: ("selected" if params["active_filter"].nil? or params["active_filter"]=="last_month") 	%> <br />
+	class: ("selected" if params["active_filter"]=="last_month") 	%> <br />
 
 
 

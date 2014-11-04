@@ -2,8 +2,8 @@
 
 <%
 
-red_color = 	'fillColor : "#FF0000",
-				strokeColor : "rgba(197,63,59,0.5)",
+red_color = 	'fillColor : "rgba(197,63,59,0.6)",
+				strokeColor : "rgba(201,48,44,1)",
 				pointColor : "rgba(201,48,44,1)",
 				pointStrokeColor : "#fff",
 				pointHighlightFill : "#fff",
@@ -67,12 +67,12 @@ green_color = 	'fillColor : "rgba(92,184,92,0.5)",
 			datasets : [
 				{
 					label: "Closed Issues",
-					<%= raw red_color %>
+					<%= raw green_color %>
 					data : <%= raw @issues_last_days[:closed].to_json %>
 				},
 				{
 					label: "Opened Issues",
-					<%= raw green_color %>
+					<%= raw red_color %>
 					data : <%= raw @issues_last_days[:created].to_json %>,
 				},
 
@@ -92,7 +92,7 @@ green_color = 	'fillColor : "rgba(92,184,92,0.5)",
 		            	
 		            	total = 0
 		            	@issues_by_priority.each{|p| 
-							total += p["total"] if p["closed"] == "f" and priority.id == p["priority_id"]
+							total += p["total"] if p["closed"] == "t" and priority.id == p["priority_id"]
 		            	}
 
 		            	total
@@ -106,7 +106,7 @@ green_color = 	'fillColor : "rgba(92,184,92,0.5)",
 		            	
 		            	total = 0
 		            	@issues_by_priority.each{|p| 
-							total += p["total"] if p["closed"] == "t" and priority.id == p["priority_id"]
+							total += p["total"] if p["closed"] == "f" and priority.id == p["priority_id"]
 		            	}
 
 		            	total
