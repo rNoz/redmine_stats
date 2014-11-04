@@ -18,10 +18,15 @@ green_color = 	'fillColor : "rgba(92,184,92,0.5)",
 
 %>
 
+<div>
+<h3><%= l(:stats_label_open_issues_count) %><%=  @open_issues %> </h3>
+<br>
+</div>
+<br>
 <div class="splitcontentleft">
 
 <div>
-<h3><%= l(:label_issue_activity) %></h3><br>
+<h3><%= l(:stats_label_issue_activity) %></h3><br>
 <canvas style="display: block; margin: 0 auto;" id="chart_left" height="200" width="400"></canvas>
 </div>
 <br>
@@ -32,7 +37,7 @@ green_color = 	'fillColor : "rgba(92,184,92,0.5)",
 <canvas style="display: block; margin: 0 auto;" id="chart_assignee"  width="400" height="150"></canvas><br>
 <%= render :partial => 'simple', :locals => { :data => @issues_by_assigned_to, :field_name => "assigned_to_id", :rows => @assignees } %>
 <br /> <br />
-<h3><%= l(:label_more_active_issues)%></h3><br>
+<h3><%= l(:stats_label_more_active_issues)%></h3><br>
 <%= render :partial => 'issues/list_simple', :locals => { :issues => @top5 } %>
 </div>
 

@@ -1,15 +1,16 @@
 # English strings go here for Rails i18n
 en:
-  label_stats: 													Statistics
-  label_issue_activity: 										Issue Activity
-  label_new_issues_priorities:									New Issue Priorities
-  label_more_active_issues: 									More active issues
-  label_filters: 												Filters
+  stats_label_stats: 													Statistics
+  stats_label_issue_activity: 											Issue Activity
+  stats_label_new_issues_priorities:									New Issue Priorities
+  stats_label_more_active_issues: 										More active issues
+  stats_label_filters: 													Filters
 
-  label_current_week: 											Current Week
-  label_current_month: 											Current Month
-  label_last_week: 												Last Week
-  label_last_month: 											Last Month
-  label_begining_of_time: 										Since Beginning of Time
-  label_filtering_between:										"Filtering betwween:"
-  label_and:													and
+  stats_label_current_week: 											Current Week
+  stats_label_current_month: 											Current Month
+  stats_label_last_week: 												Last Week
+  stats_label_last_month: 												Last Month
+  stats_label_begining_of_time: 										Since Beginning of Time
+  stats_label_filtering_between:										"Filtering betwween: "
+  stats_label_and:														and
+  stats_label_open_issues_count:										"Currently Opened Issues: "

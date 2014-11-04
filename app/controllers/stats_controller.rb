@@ -8,6 +8,8 @@ class StatsController < ApplicationController
   	check_filter
     @dates = date_interval
 
+    @open_issues = Issue.open.count
+
   	@statuses = IssueStatus.all
   	@trackers = Tracker.all
   	@priorities = IssuePriority.all.reverse
@@ -92,7 +94,7 @@ class StatsController < ApplicationController
 				inner join users as t4
 				on t3.user_id = t4.id
 				where t1.assignable = 't' and t4.type = 'User'
-				group by t3.user_id LIMIT 5").each do |row|
+				group by t3.user_id").each do |row|
 					users << User.find(row["user_id"])
 
 				end
