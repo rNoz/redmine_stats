@@ -1,5 +1,10 @@
 <h3><%= l(:label_filters) %></h3>
 
+<b><%= l(:label_filtering_between) %></b> <br />
+<b><%= @dates[:begin_date]%></b>
+<%= l(:label_and) %>
+<b><%= @dates[:end_date]%></b>
+<br><br>
 <%= link_to l(:label_begining_of_time), {active_filter: "all"}, 
 	class: ("selected" if params["active_filter"].nil? or params["active_filter"]=="all") 			%> <br />
 

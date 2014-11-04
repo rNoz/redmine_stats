@@ -11,3 +11,5 @@ en:
   label_last_week: 												Last Week
   label_last_month: 											Last Month
   label_begining_of_time: 										Since Beginning of Time
+  label_filtering_between:										"Filtering betwween:"
+  label_and:													and

@@ -181,9 +181,9 @@ class StatsController < ApplicationController
       begin_date = begin_date.to_datetime
       end_date = (end_date + 1.day).to_datetime
       
-      where = "#{Issue.table_name}.#{select_field}=j.id 
-          AND #{Issue.table_name}.created_on >= '#{begin_date}' 
-          AND #{Issue.table_name}.created_on <= '#{end_date}'"
+      where = "#{Issue.table_name}.#{select_field}=j.id and 
+      ((#{Issue.table_name}.created_on >= '#{begin_date}' and #{Issue.table_name}.created_on <= '#{end_date}') or
+        (#{Issue.table_name}.closed_on >= '#{begin_date}' and #{Issue.table_name}.closed_on <= '#{end_date}'))"
     
     end
       
@@ -200,7 +200,7 @@ class StatsController < ApplicationController
             and #{where}
           group by s.id, s.is_closed, j.id"
     
-    puts "aaa #{sql}"
+    
     ActiveRecord::Base.connection.select_all(sql)
   end
 
