@@ -14,32 +14,32 @@ module RedmineStats
 
         module ClassMethods
           def created_on(date)
-            where(['created_on >= ? AND created_on < ?', date, date + 1])
+            where(["#{Issue.table_name}.created_on >= ? AND created_on < ?", date, date + 1])
           end
 
 
 
           def closed_on(date)
-            where(['closed_on >= ? AND closed_on < ?', date, date + 1])
+            where(["#{Issue.table_name}.closed_on >= ? AND closed_on < ?", date, date + 1])
           end
 
 
 
-          def created_between(begin_date, end_date)
-            begin_date = begin_date.to_datetime
-            end_date = (end_date + 1.day).to_datetime
+          # def created_between(begin_date, end_date)
+          #   begin_date = begin_date.to_datetime
+          #   end_date = (end_date + 1.day).to_datetime
             
-            where(['created_on >= ? AND created_on < ?', begin_date, end_date])
-          end
+          #   where(['created_on >= ? AND created_on < ?', begin_date, end_date])
+          # end
 
 
 
-          def closed_between(begin_date, end_date)
-            begin_date = begin_date.to_datetime
-            end_date = (end_date + 1.day).to_datetime
+          # def closed_between(begin_date, end_date)
+          #   begin_date = begin_date.to_datetime
+          #   end_date = (end_date + 1.day).to_datetime
 
-            where(['closed_on >= ? AND closed_on < ?', begin_date, end_date])
-          end
+          #   where(['closed_on >= ? AND closed_on < ?', begin_date, end_date])
+          # end
 
 
 
@@ -47,27 +47,50 @@ module RedmineStats
 
             issues = []
             where = ""
+            where_pre = nil
 
-            unless params[:begin_date].nil?
-              puts "ccc #{params}"
-              begin_date = params[:begin_date].to_datetime
-              end_date = (params[:end_date] + 1.day).to_datetime
-              
-              where = ['created_on >= ? AND created_on < ?', begin_date, end_date] 
 
+            begin_date = params[:begin_date].to_datetime unless params[:begin_date].nil?
+            end_date = (params[:end_date] + 1.day).to_datetime unless params[:end_date].nil?
+            project = params[:project]
+
+            #creating the query... this code is really bad....
+
+            unless project.nil?
+              where_pre = "#{Issue.table_name}.project_id = #{project.id}" 
             end
-            Journal.select("journalized_id, count(journalized_id) AS count").
+
+            
+
+            
+
+            if params[:begin_date].nil?
+              where = where_pre
+            else
+              
+              
+              if where_pre.nil?
+                where =["#{Issue.table_name}.created_on >= ? AND #{Issue.table_name}.created_on < ?", begin_date, end_date] 
+              else
+                where = ["#{where_pre} and #{Issue.table_name}.created_on >= ? AND #{Issue.table_name}.created_on < ?", begin_date, end_date] 
+              end
+            end
+
+            
+            
+
+
+            Journal.joins(:issue).select("journalized_id, count(journalized_id) AS count").
             where(where).
             group("journalized_id").
             order("count DESC").
             limit(5).each do |row|
               issues << Issue.find(row.issue.id)
             end
-
+            
             issues
 
           end
-
         end
     
         module InstanceMethods

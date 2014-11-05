@@ -10,20 +10,31 @@
 
 <% end %>
 
-<%= link_to l(:stats_label_begining_of_time), {active_filter: "all"}, 
-	class: ("selected" if params["active_filter"].nil? or params["active_filter"]=="all") %> <br />
+<%= link_to l(:stats_label_begining_of_time), {time_filter: "all"}, 
+	class: ("selected" if params["time_filter"].nil? or params["active_filter"]=="all") %> <br />
 
-<%= link_to l(:stats_label_current_week), 	{active_filter: "current_week"},
-	class: ("selected" if params["active_filter"]=="current_week") 	%> <br />
+<%= link_to l(:stats_label_current_week), 	{time_filter: "current_week"},
+	class: ("selected" if params["time_filter"]=="current_week") 	%> <br />
 
-<%= link_to l(:stats_label_last_week), 		{active_filter: "last_week"},
-	class: ("selected" if params["active_filter"]=="last_week") 	%> <br />
+<%= link_to l(:stats_label_last_week), 		{time_filter: "last_week"},
+	class: ("selected" if params["time_filter"]=="last_week") 	%> <br />
 
-<%= link_to l(:stats_label_current_month), 	{active_filter: "current_month"},
-	class: ("selected" if params["active_filter"]=="current_month") %> <br />
+<%= link_to l(:stats_label_current_month), 	{time_filter: "current_month"},
+	class: ("selected" if params["time_filter"]=="current_month") %> <br />
 
-<%= link_to l(:stats_label_last_month), 		{active_filter: "last_month"},
-	class: ("selected" if params["active_filter"]=="last_month") 	%> <br />
+<%= link_to l(:stats_label_last_month), 		{time_filter: "last_month"},
+	class: ("selected" if params["time_filter"]=="last_month") 	%> <br />
 
+<br>
+<b><%= l(:label_project) %>:</b><br>
+<%= select_tag "cb_projects", options_from_collection_for_select(@projects, 'identifier', 'name', 
+		selected: params["project"])  %>
 
+<script>
+$(function(){
+	$( "#cb_projects" ).on( "click", function() {
+	  window.location = "?project=" + $('#cb_projects option:selected').val() 
+	});
+});
 
+</script>

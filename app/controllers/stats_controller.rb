@@ -7,23 +7,40 @@ class StatsController < ApplicationController
 
   	check_filter
     @dates = date_interval
+    parameters = @dates
 
+    get_project
+    parameters[:project] = @s_project
+    
     @open_issues = Issue.open.count
-
+  
   	@statuses = IssueStatus.all
   	@trackers = Tracker.all
   	@priorities = IssuePriority.all.reverse
   	@assignees = assignable_users
   	@authors = author_users
 
+    @projects = Project.all
+    @projects.insert(0, Project.new(identifier: "all_projects", name: l(:stats_all_projects)))
 
-  	@issues_by_tracker = by_tracker(@dates)
-  	@issues_by_priority = by_priority(@dates)
-  	@issues_by_assigned_to = by_assigned_to(@dates)
-  	@issues_by_author = by_author(@dates)
-  	@issues_last_days = by_days(@dates)
-  	@top5 = Issue.top5(@dates)
 
+    @issues_by_tracker = by_tracker(parameters)
+  	@issues_by_priority = by_priority(parameters)
+  	@issues_by_assigned_to = by_assigned_to(parameters)
+  	@issues_by_author = by_author(parameters)
+  	@issues_last_days = by_days(parameters)
+  	
+    @top5 = Issue.top5(parameters)
+
+  end
+
+  def get_project
+    p = get_project_identifier
+    @s_project =  Project.where(identifier: get_project_identifier).first if p != nil
+  end
+
+  def get_project_identifier
+      return params[:project] if !params[:project].nil? and params[:project] != "all_projects"
   end
 
   def date_interval
@@ -33,8 +50,8 @@ class StatsController < ApplicationController
 
     date = Date.today
 
-    unless params[:active_filter].nil?
-      case params[:active_filter]
+    unless params[:time_filter].nil?
+      case params[:time_filter]
         when "current_week"
           begin_date = date.beginning_of_week
           end_date = date.end_of_week
@@ -103,35 +120,52 @@ class StatsController < ApplicationController
 
   end
 
-  def by_days(params)
+  def by_days(parameters)
 
   	created = []
   	closed = []
   	dates = []
 
-    begin_date = params[:begin_date]
-    end_date = params[:end_date]
+    begin_date = parameters[:begin_date]
+    end_date = parameters[:end_date]
+    project = parameters[:project]
 
+    #no date filters
     if(begin_date.nil? and end_date.nil?)
 
     	7.times do |days_before|
-    		date = Date.today - days_before
-    		created << Issue.created_on(date).count
-    		closed << Issue.closed_on(date).count
-    		dates << date.strftime("%A")
 
-        created.reverse!
-        closed.reverse!
-        dates.reverse!
+        if(project.nil?)
 
+      		date = Date.today - days_before
+      		created << Issue.created_on(date).count
+      		closed << Issue.closed_on(date).count
+      		dates << date.strftime("%A, %d")
+        else #filter by project
+          date = Date.today - days_before
+          created << project.issues.created_on(date).count
+          closed << project.issues.closed_on(date).count
+          dates << date.strftime("%A, %d")
+        end
     	end
+
+      created.reverse!
+      closed.reverse!
+      dates.reverse!
       
-    else
-    
+    else #date filters
       (begin_date..end_date).to_a.each do|d| 
-        created << Issue.created_on(d).count
-        closed << Issue.closed_on(d).count
-        dates << d.strftime("%A, %d") 
+        if(project.nil?) #no project filter
+
+          created << Issue.created_on(d).count
+          closed << Issue.closed_on(d).count
+          dates << d.strftime("%A, %d") 
+        else #project filter
+          
+          created << @s_project.issues.created_on(d).count
+          closed << @s_project.issues.closed_on(d).count
+          dates << d.strftime("%A, %d") 
+        end
       end
     end
 
@@ -141,32 +175,36 @@ class StatsController < ApplicationController
 
   end
 
-   def by_author(params)
+  def by_author(parameters)
     count_and_group_by(:field => 'author_id',
                        :joins => User.table_name,
-                       :begin_date  => params[:begin_date],
-                       :end_date    => params[:end_date])
+                       :begin_date  => parameters[:begin_date],
+                       :end_date    => parameters[:end_date],
+                       :project     => parameters[:project])
   end
 
-  def by_assigned_to(params)
+  def by_assigned_to(parameters)
     count_and_group_by(:field => 'assigned_to_id',
                        :joins => User.table_name,
-                       :begin_date  => params[:begin_date],
-                       :end_date    => params[:end_date])
+                       :begin_date  => parameters[:begin_date],
+                       :end_date    => parameters[:end_date],
+                       :project     => parameters[:project])
   end
 
-  def by_priority(params)
+  def by_priority(parameters)
     count_and_group_by(:field => 'priority_id',
                        :joins => IssuePriority.table_name,
-                       :begin_date  => params[:begin_date],
-                       :end_date    => params[:end_date])
+                       :begin_date  => parameters[:begin_date],
+                       :end_date    => parameters[:end_date],
+                       :project     => parameters[:project])
   end
 
-  def by_tracker(params)
+  def by_tracker(parameters)
     count_and_group_by(:field => 'tracker_id',
                        :joins => Tracker.table_name,
-                       :begin_date  => params[:begin_date],
-                       :end_date    => params[:end_date])
+                       :begin_date  => parameters[:begin_date],
+                       :end_date    => parameters[:end_date],
+                       :project     => parameters[:project])
   end
 
 
@@ -176,19 +214,28 @@ class StatsController < ApplicationController
     joins = options.delete(:joins)
     begin_date = options.delete(:begin_date)
     end_date = options.delete(:end_date)
+    project = options.delete(:project)
 
-    if begin_date.nil? and end_date.nil?
-      where = "#{Issue.table_name}.#{select_field}=j.id"
-    else
+    #create the where clause
+
+    where = "#{Issue.table_name}.#{select_field}=j.id"
+
+    unless begin_date.nil? and end_date.nil?
       begin_date = begin_date.to_datetime
       end_date = (end_date + 1.day).to_datetime
       
-      where = "#{Issue.table_name}.#{select_field}=j.id and 
+      where << " and 
       ((#{Issue.table_name}.created_on >= '#{begin_date}' and #{Issue.table_name}.created_on <= '#{end_date}') or
         (#{Issue.table_name}.closed_on >= '#{begin_date}' and #{Issue.table_name}.closed_on <= '#{end_date}'))"
     
     end
+
+   
+      where << " and #{Issue.table_name}.project_id=#{Project.table_name}.id 
+      and #{Project.table_name}.identifier = '#{project.identifier}' "  unless project.nil?
+    
       
+    # end of create the where clause
 
     
     sql = "select s.id as status_id, 

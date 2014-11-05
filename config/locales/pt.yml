@@ -14,3 +14,4 @@ pt:
   stats_label_filtering_between:                    "Filtrar entre: "
   stats_label_and:                                  e
   stats_label_open_issues_count:                    "Tarefas atualmente abertas: "
+  stats_all_projects:                               "Todos os Projetos"
