@@ -10,20 +10,17 @@
 
 <% end %>
 
-<%= link_to l(:stats_label_begining_of_time), {time_filter: "all"}, 
-	class: ("selected" if params["time_filter"].nil? or params["active_filter"]=="all") %> <br />
+<% 
+	labels = [:stats_label_begining_of_time, :stats_label_current_week, :stats_label_last_week,:stats_label_current_month, :stats_label_last_month]
+%>
 
-<%= link_to l(:stats_label_current_week), 	{time_filter: "current_week"},
-	class: ("selected" if params["time_filter"]=="current_week") 	%> <br />
 
-<%= link_to l(:stats_label_last_week), 		{time_filter: "last_week"},
-	class: ("selected" if params["time_filter"]=="last_week") 	%> <br />
+<%=link_to_function l(:stats_label_begining_of_time), "redirect(0)",class: ("selected" if params["time_filter"] == "all") %><br>
+<%=link_to_function l(:stats_label_current_week), "redirect(1)",class: ("selected" if params["time_filter"] == "current_week") %><br>
+<%=link_to_function l(:stats_label_last_week), "redirect(2)",class: ("selected" if params["time_filter"] == "last_week") %><br>
+<%=link_to_function l(:stats_label_current_month), "redirect(3)",class: ("selected" if params["time_filter"] == "current_month") %><br>
+<%=link_to_function l(:stats_label_last_month), "redirect(4)",class: ("selected" if params["time_filter"] == "last_month") %><br>
 
-<%= link_to l(:stats_label_current_month), 	{time_filter: "current_month"},
-	class: ("selected" if params["time_filter"]=="current_month") %> <br />
-
-<%= link_to l(:stats_label_last_month), 		{time_filter: "last_month"},
-	class: ("selected" if params["time_filter"]=="last_month") 	%> <br />
 
 <br>
 <b><%= l(:label_project) %>:</b><br>
@@ -36,5 +33,22 @@ $(function(){
 	  window.location = "?project=" + $('#cb_projects option:selected').val() 
 	});
 });
+
+function redirect(n)
+{
+	var url;
+
+	switch (n)
+	{
+		case 0: url = "all"; break;
+		case 1: url = "current_week"; break;
+		case 2: url = "last_week"; break;
+		case 3: url = "current_month"; break;
+		case 4: url = "last_month"; break;
+	}
+
+	url += "?project=" + $('#cb_projects option:selected').val();
+	window.location = url;
+}
 
 </script>
