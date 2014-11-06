@@ -40,11 +40,11 @@ function redirect(n)
 
 	switch (n)
 	{
-		case 0: url = "all"; break;
-		case 1: url = "current_week"; break;
-		case 2: url = "last_week"; break;
-		case 3: url = "current_month"; break;
-		case 4: url = "last_month"; break;
+		case 0: url = "<%= url_for :controller => 'stats', :action => 'index', :time_filter => 'all' %>"; break;
+		case 1: url = "<%= url_for :controller => 'stats', :action => 'index', :time_filter => 'current_week' %>"; break;
+		case 2: url = "<%= url_for :controller => 'stats', :action => 'index', :time_filter => 'last_week' %>"; break;
+		case 3: url = "<%= url_for :controller => 'stats', :action => 'index', :time_filter => 'current_month' %>"; break;
+		case 4: url = "<%= url_for :controller => 'stats', :action => 'index', :time_filter => 'last_month' %>"; break;
 	}
 
 	url += "?project=" + $('#cb_projects option:selected').val();
