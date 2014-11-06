@@ -1,4 +1,9 @@
-<%= javascript_include_tag 'Chart.min.js', :plugin => 'redmine_stats' %>
+<% content_for :header_tags do %>
+    <%= stylesheet_link_tag 'stats.css', :plugin => 'redmine_stats' %>
+    <%= javascript_include_tag 'Chart.min.js', :plugin => 'redmine_stats' %>
+<% end %>
+
+
 
 <%
 
@@ -19,26 +24,30 @@ green_color = 	'fillColor : "rgba(92,184,92,0.5)",
 %>
 
 <div>
-<h3><%= l(:stats_label_open_issues_count) %><%=  @open_issues %> </h3>
-<br>
+	<h3><%= l(:stats_label_open_issues_count) %><%=  @open_issues %> </h3>
+	<br>
 </div>
-<br>
-<div class="splitcontentleft">
 
-<div>
-<h3><%= l(:stats_label_issue_activity) %></h3><br>
-<canvas style="display: block; margin: 0 auto;" id="chart_left" height="200" width="400"></canvas>
-</div>
 <br>
-<h3><%=l(:field_tracker)%></h3><br>
-<%= render :partial => 'simple', :locals => { :data => @issues_by_tracker, :field_name => "tracker_id", :rows => @trackers } %>
-<br />
-<h3><%=l(:field_assigned_to)%></h3><br>
-<canvas style="display: block; margin: 0 auto;" id="chart_assignee"  width="400" height="150"></canvas><br>
-<%= render :partial => 'simple', :locals => { :data => @issues_by_assigned_to, :field_name => "assigned_to_id", :rows => @assignees } %>
-<br /> <br />
-<h3><%= l(:stats_label_more_active_issues)%></h3><br>
-<%= render :partial => 'issues/list_simple', :locals => { :issues => @top5 } %>
+
+<div class="splitcontentleft">
+	<div>
+		<h3><%= l(:stats_label_issue_activity) %></h3><br>
+		<canvas style="display: block; margin: 0 auto;" id="chart_left" height="200" width="400"></canvas>
+	</div>
+	<br>
+
+	<h3><%=l(:field_tracker)%></h3><br>
+	<%= render :partial => 'simple', :locals => { :data => @issues_by_tracker, :field_name => "tracker_id", :rows => @trackers } %>
+	<br />
+	
+	<h3><%=l(:field_assigned_to)%></h3><br>
+	<canvas style="display: block; margin: 0 auto;" id="chart_assignee"  width="400" height="150"></canvas><br>
+	<%= render :partial => 'simple', :locals => { :data => @issues_by_assigned_to, :field_name => "assigned_to_id", :rows => @assignees } %>
+	<br /> <br />
+	
+	<h3><%= l(:stats_label_more_active_issues)%></h3><br>
+	<%= render :partial => 'issues/list_simple', :locals => { :issues => @top5 } %>
 </div>
 
 
@@ -47,15 +56,15 @@ green_color = 	'fillColor : "rgba(92,184,92,0.5)",
 
 
 <div class="splitcontentright">
-<h3><%=l(:field_priority)%></h3><br>
-<canvas style="display: block; margin: 0 auto;" id="chart_right"  width="400" height="200"></canvas><br><br><br><br>
-<%= render :partial => 'simple', :locals => { :data => @issues_by_priority, :field_name => "priority_id", :rows => @priorities } %>
-<br />
-<h3><%=l(:field_author)%></h3><br>
-<canvas style="display: block; margin: 0 auto;" id="chart_author"  width="400" height="150"></canvas><br>
-<%= render :partial => 'simple', :locals => { :data => @issues_by_author, :field_name => "author_id", :rows => @authors } %>
-<br />
-
+	<h3><%=l(:field_priority)%></h3><br>
+	<canvas style="display: block; margin: 0 auto;" id="chart_right"  width="400" height="200"></canvas><br><br><br><br>
+	<%= render :partial => 'simple', :locals => { :data => @issues_by_priority, :field_name => "priority_id", :rows => @priorities } %>
+	<br />
+	
+	<h3><%=l(:field_author)%></h3><br>
+	<canvas style="display: block; margin: 0 auto;" id="chart_author"  width="400" height="150"></canvas><br>
+	<%= render :partial => 'simple', :locals => { :data => @issues_by_author, :field_name => "author_id", :rows => @authors } %>
+	<br />
 </div>
 
 
@@ -63,139 +72,166 @@ green_color = 	'fillColor : "rgba(92,184,92,0.5)",
     <%= render :partial => 'sidebar' %>
 <% end %>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <script>
 
-			//Chart left
-			var labels_1 = <%= raw @issues_last_days[:dates].to_json %>;
-			var chart_left_data = {
-			labels : labels_1,
-			datasets : [
-				{
-					label: "Closed Issues",
-					<%= raw green_color %>
-					data : <%= raw @issues_last_days[:closed].to_json %>
-				},
-				{
-					label: "Opened Issues",
-					<%= raw red_color %>
-					data : <%= raw @issues_last_days[:created].to_json %>,
-				},
+	//Chart left
+	var labels_1 = <%= raw @issues_last_days[:dates].to_json %>;
+	var chart_left_data = {
+	labels : labels_1,
+	datasets : [
+		{
+			label: "Closed Issues",
+			<%= raw green_color %>
+			data : <%= raw @issues_last_days[:closed].to_json %>
+		},
+		{
+			label: "Opened Issues",
+			<%= raw red_color %>
+			data : <%= raw @issues_last_days[:created].to_json %>,
+		},
 
-			]};
-
-
+	]};
 
 
-			//Chart right
-			var chart_right_data = {
-		    labels: <%= raw @priorities.map{|p| p.name}.to_json %>,
-		    datasets: [
-		        {
-		            label: "Closed Issues",
-					<%= raw green_color %>
-		            data: <%= raw @priorities.map{|priority| 
-		            	
-		            	total = 0
-		            	@issues_by_priority.each{|p| 
-							total += p["total"] if p["closed"] == "t" and priority.id == p["priority_id"]
+
+
+	//Chart right
+	var chart_right_data = {
+    labels: <%= raw @priorities.map{|p| p.name}.to_json %>,
+    datasets: [
+        {
+            label: "Closed Issues",
+			<%= raw green_color %>
+            data: <%= raw @priorities.map{|priority| 
+            	
+            	total = 0
+            	@issues_by_priority.each{|p| 
+					total += p["total"] if p["closed"] == "t" and priority.id == p["priority_id"]
+            	}
+
+            	total
+
+            }.to_json %>
+        } ,
+        {
+            label: "Opened Issues",
+			<%= raw red_color %>
+            data: <%= raw @priorities.map{|priority| 
+            	
+            	total = 0
+            	@issues_by_priority.each{|p| 
+					total += p["total"] if p["closed"] == "f" and priority.id == p["priority_id"]
+            	}
+
+            	total
+
+            }.to_json %>
+        }
+    ]};
+
+
+    //assignee charts
+
+    var chart_assignee_data = {
+	    labels: <%= raw @assignees.map{|a| "#{a.firstname} #{a.lastname}"}.to_json %>,
+	    datasets: [
+	        {
+	            label: "Open Issues",
+	            <%= raw red_color %>
+	            data: <%= raw @assignees.map{|a| 
+            	
+	            		total = 0
+
+		            	@issues_by_assigned_to.each{|i| 
+							total = i["total"] if i["closed"] == "f" and a.id == i["assigned_to_id"]
 		            	}
 
 		            	total
 
-		            }.to_json %>
-		        } ,
-		        {
-		            label: "Opened Issues",
-					<%= raw red_color %>
-		            data: <%= raw @priorities.map{|priority| 
-		            	
-		            	total = 0
-		            	@issues_by_priority.each{|p| 
-							total += p["total"] if p["closed"] == "f" and priority.id == p["priority_id"]
+	            	}.to_json %>
+	        },
+	        {
+	            label: "Closed Issues",
+	            <%= raw green_color %>
+	            data: <%= raw @assignees.map{|a| 
+            	
+	            		total = 0
+
+		            	@issues_by_author.each{|i| 
+							total = i["total"] if i["closed"] == "t" and a.id == i["author_id"]
 		            	}
 
 		            	total
 
-		            }.to_json %>
-		        }
-		    ]};
+	            	}.to_json %>
+	        }
+	    ]
+	};
 
+	//author chart
 
-		    //assignee charts
+	var chart_author_data = {
+	    labels: <%= raw @authors.map{|a| "#{a.firstname} #{a.lastname}"}.to_json %>,
+	    datasets: [
+      {
+        label: "Created Issues",
+        <%= raw red_color %>
+        data: <%= raw @authors.map{|a| 
+      	
+        		total = 0
 
-		    var chart_assignee_data = {
-			    labels: <%= raw @assignees.map{|a| "#{a.firstname} #{a.lastname}"}.to_json %>,
-			    datasets: [
-			        {
-			            label: "Open Issues",
-			            <%= raw red_color %>
-			            data: <%= raw @assignees.map{|a| 
-		            	
-			            		total = 0
+          	@issues_by_author.each{|i| 
+				total = i["total"] if i["closed"] == "f" and a.id == i["author_id"]
+          	}
 
-				            	@issues_by_assigned_to.each{|i| 
-									total = i["total"] if i["closed"] == "f" and a.id == i["assigned_to_id"]
-				            	}
+          	total
 
-				            	total
+        	}.to_json %>
+      },
+      {
+        label: "Closed Issues",
+        <%= raw green_color %>
+        data: <%= raw @authors.map{|a| 
+      	
+        		total = 0
 
-			            	}.to_json %>
-			        },
-			        {
-			            label: "Closed Issues",
-			            <%= raw green_color %>
-			            data: <%= raw @assignees.map{|a| 
-		            	
-			            		total = 0
+          	@issues_by_author.each{|i| 
+				total = i["total"] if i["closed"] == "t" and a.id == i["author_id"]
+          	}
 
-				            	@issues_by_author.each{|i| 
-									total = i["total"] if i["closed"] == "t" and a.id == i["author_id"]
-				            	}
+          	total
 
-				            	total
-
-			            	}.to_json %>
-			        }
-			    ]
-			};
-
-			//author chart
-
-			var chart_author_data = {
-			    labels: <%= raw @authors.map{|a| "#{a.firstname} #{a.lastname}"}.to_json %>,
-			    datasets: [
-			        {
-			            label: "Created Issues",
-			            <%= raw red_color %>
-			            data: <%= raw @authors.map{|a| 
-		            	
-			            		total = 0
-
-				            	@issues_by_author.each{|i| 
-									total = i["total"] if i["closed"] == "f" and a.id == i["author_id"]
-				            	}
-
-				            	total
-
-			            	}.to_json %>
-			        },
-			        {
-			            label: "Closed Issues",
-			            <%= raw green_color %>
-			            data: <%= raw @authors.map{|a| 
-		            	
-			            		total = 0
-
-				            	@issues_by_author.each{|i| 
-									total = i["total"] if i["closed"] == "t" and a.id == i["author_id"]
-				            	}
-
-				            	total
-
-			            	}.to_json %>
-			        }
-			    ]
-			};
+        	}.to_json %>
+      }]
+	};
 
 
 	window.onload = function(){

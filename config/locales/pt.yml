@@ -15,3 +15,7 @@ pt:
   stats_label_and:                                  e
   stats_label_open_issues_count:                    "Tarefas atualmente abertas: "
   stats_all_projects:                               "Todos os Projetos"
+
+  stats_label_open_issues:                          "Tarefas Abertas"
+  stats_label_closed_issues:                        "Tarefas Fechadas"
+  stats_label_legend:                               "Legenda"
