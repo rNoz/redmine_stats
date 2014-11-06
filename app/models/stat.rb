@@ -60,22 +60,24 @@ class Stat < ActiveRecord::Base
 
 
   #get all authors of issues
-  def self.author_users()
+  def self.authors(project)
   	
-  	
+  	data = []
 
-  	users = []
+  	if project.nil?
+  		ActiveRecord::Base.connection.execute("SELECT count(project_id), project_id from issues group by project_id  order by count(project_id) DESC LIMIT 5").each do |row|
+					data << Project.find(row["project_id"])
+			end
+  	else
 
-		ActiveRecord::Base.connection.execute("SELECT count(author_id), author_id from issues group by author_id  order by count(author_id) DESC LIMIT 5").each do |row|
-					users << User.find(row["author_id"])
-				end
+			ActiveRecord::Base.connection.execute("SELECT count(author_id), author_id from issues where project_id = '#{project.id}' group by author_id  order by count(author_id) DESC LIMIT 5").each do |row|
+					data << User.find(row["author_id"])
+			end
+		end
 
-		users
-		
-			
+		data
 		
   end
-
 
 
 
@@ -163,12 +165,24 @@ class Stat < ActiveRecord::Base
 
 
 
-  def self.issues_by_author(parameters = {:begin_date => nil, :end_date => nil})
-    count_and_group_by(:field => 'author_id',
+  def self.issues_by_project(parameters = {:begin_date => nil, :end_date => nil})
+    project = parameters.delete(:project)
+
+    if project.nil?
+    		count_and_group_by(:field => 'project_id',
+                       :joins => Project.table_name,
+                       :begin_date  => parameters[:begin_date],
+                       :end_date    => parameters[:end_date],
+                       :project     => parameters[:project])
+    else
+    		count_and_group_by(:field => 'author_id',
                        :joins => User.table_name,
                        :begin_date  => parameters[:begin_date],
                        :end_date    => parameters[:end_date],
                        :project     => parameters[:project])
+    end
+
+
   end
 
   def self.issues_by_assigned_to(parameters = {:begin_date => nil, :end_date => nil})

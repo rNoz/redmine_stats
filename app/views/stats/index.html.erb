@@ -58,9 +58,21 @@ green_color = 	'fillColor : "rgba(92,184,92,0.5)",
 	<%= render :partial => 'simple', :locals => { :data => @issues_by_priority, :field_name => "priority_id", :rows => @priorities } %>
 	<br />
 	
-	<h3><%=l(:field_author)%></h3><br>
-	<canvas style="display: block; margin: 0 auto;" id="chart_author"  width="400" height="150"></canvas><br>
-	<%= render :partial => 'simple', :locals => { :data => @issues_by_author, :field_name => "author_id", :rows => @authors } %>
+	<h3>
+		<%= if @s_project.nil? 
+					l(:field_author) 
+				else 
+					l(:field_project) 
+				end %>
+	</h3><br>
+	<canvas style="display: block; margin: 0 auto;" id="chart_author_project"  width="400" height="150"></canvas><br>
+	<%= 
+		if @s_project.nil? 
+			render :partial => 'simple', :locals => { :data => @issues_by_project, :field_name => "project_id", :rows => @projects } 
+		else
+			render :partial => 'simple', :locals => { :data => @issues_by_author, :field_name => "author_id", :rows => @authors } 
+		end
+		%>
 	<br />
 </div>
 
@@ -207,8 +219,8 @@ green_color = 	'fillColor : "rgba(92,184,92,0.5)",
             	
 	            		total = 0
 
-		            	@issues_by_author.each{|i| 
-							total = i["total"] if i["closed"] == "t" and a.id == i["author_id"]
+		            	@issues_by_assigned_to.each{|i| 
+							total = i["total"] if i["closed"] == "t" and a.id == i["assigned_to_id"]
 		            	}
 
 		            	total
@@ -218,20 +230,23 @@ green_color = 	'fillColor : "rgba(92,184,92,0.5)",
 	    ]
 	};
 
-	//author chart
+	///project chart
 
-	var chart_author_data = {
-	    labels: <%= raw @authors.map{|a| "#{a.firstname} #{a.lastname}"}.to_json %>,
+	var chart_project_data = {
+
+			
+
+	    labels: <%= raw @projects.map{|a| a.name }.to_json %>,
 	    datasets: [
       {
         label: "Created Issues",
         <%= raw red_color %>
-        data: <%= raw @authors.map{|a| 
+        data: <%= raw @projects .map{|a| 
       	
         		total = 0
 
-          	@issues_by_author.each{|i| 
-				total = i["total"] if i["closed"] == "f" and a.id == i["author_id"]
+          	@issues_by_project.each{|i| 
+							total = i["total"] if i["closed"] == "f" and a.id == i["project_id"]
           	}
 
           	total
@@ -241,12 +256,62 @@ green_color = 	'fillColor : "rgba(92,184,92,0.5)",
       {
         label: "Closed Issues",
         <%= raw green_color %>
-        data: <%= raw @authors.map{|a| 
+        data: <%= raw @projects .map{|a| 
       	
         		total = 0
 
-          	@issues_by_author.each{|i| 
-				total = i["total"] if i["closed"] == "t" and a.id == i["author_id"]
+          	@issues_by_project.each{|i| 
+							total = i["total"] if i["closed"] == "t" and a.id == i["project_id"]
+          	}
+
+          	total
+
+        	}.to_json %>
+      }]
+	};
+
+
+
+	//author chart
+	var chart_author_data = {
+
+			<% 
+
+				if @s_project.nil? 
+					data1 = @projects 
+					data2 = "project_id"
+				else 
+					data1 = @authors 
+					data2 = "author_id"
+				end 
+			%>
+
+	    labels: <%= raw @authors.map{|a| a.name }.to_json %>,
+	    datasets: [
+      {
+        label: "Created Issues",
+        <%= raw red_color %>
+        data: <%= raw @authors .map{|a| 
+      	
+        		total = 0
+
+          	@issues_by_project.each{|i| 
+							total = i["total"] if i["closed"] == "f" and a.id == i["author_id"]
+          	}
+
+          	total
+
+        	}.to_json %>
+      },
+      {
+        label: "Closed Issues",
+        <%= raw green_color %>
+        data: <%= raw @authors .map{|a| 
+      	
+        		total = 0
+
+          	@issues_by_project.each{|i| 
+							total = i["total"] if i["closed"] == "t" and a.id == i["author_id"]
           	}
 
           	total
@@ -271,11 +336,18 @@ green_color = 	'fillColor : "rgba(92,184,92,0.5)",
 		window.myLine = new Chart(ctx3).Bar(chart_assignee_data, {
 		    barShowStroke: false
 		});
+		<% if @s_project.nil? %>
+			var ctx4 = document.getElementById("chart_author_project").getContext("2d");
+			window.myLine = new Chart(ctx4).Bar(chart_project_data, {
+			    barShowStroke: false
+			});
+		<% else %>
+			var ctx4 = document.getElementById("chart_author_project").getContext("2d");
+			window.myLine = new Chart(ctx4).Bar(chart_author_data, {
+			    barShowStroke: false
+			});
+		<% end %>
 
-		var ctx4 = document.getElementById("chart_author").getContext("2d");
-		window.myLine = new Chart(ctx4).Bar(chart_author_data, {
-		    barShowStroke: false
-		});
 
 		var ctx5 = document.getElementById("chart_open").getContext("2d");
 		window.myLine = new Chart(ctx5).Bar(chart_open_issues, {

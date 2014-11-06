@@ -19,17 +19,17 @@ class StatsController < ApplicationController
   	@trackers = Tracker.all
   	@priorities = IssuePriority.all.reverse
   	@assignees = Stat.assignable_users(@s_project)
-  	@authors = Stat.author_users
+  	@authors = Stat.authors(@s_project)
 
     @projects = Project.all           #List os projects that can be used as a filter
-    @projects.insert(0, Project.new(identifier: "all_projects", name: l(:stats_all_projects))) # All projects label
+    
 
 
     @open_issues = Stat.issues_by_priority()
     @issues_by_tracker = Stat.issues_by_tracker(parameters)
   	@issues_by_priority = Stat.issues_by_priority(parameters)
   	@issues_by_assigned_to = Stat.issues_by_assigned_to(parameters)
-  	@issues_by_author = Stat.issues_by_author(parameters)
+  	@issues_by_project = Stat.issues_by_project(parameters)
   	@issues_last_days = Stat.issues_by_days(parameters)
   	
     @top5 = Stat.top5(parameters)
