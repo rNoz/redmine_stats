@@ -60,9 +60,9 @@ green_color = 	'fillColor : "rgba(92,184,92,0.5)",
 	
 	<h3>
 		<%= if @s_project.nil? 
-					l(:field_author) 
-				else 
 					l(:field_project) 
+				else 
+					l(:field_author) 
 				end %>
 	</h3><br>
 	<canvas style="display: block; margin: 0 auto;" id="chart_author_project"  width="400" height="150"></canvas><br>
