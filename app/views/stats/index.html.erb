@@ -23,10 +23,7 @@ green_color = 	'fillColor : "rgba(92,184,92,0.5)",
 
 %>
 
-<div>
-	<h3><%= l(:stats_label_open_issues_count) %><%=  @open_issues %> </h3>
-	<br>
-</div>
+
 
 <br>
 
@@ -102,6 +99,32 @@ green_color = 	'fillColor : "rgba(92,184,92,0.5)",
 
 <script>
 
+
+
+	//open issues chart
+	var labels =  <%= raw @priorities.map{|p| p.name}.to_json %>;
+	var chart_open_issues = {
+	labels : labels,
+	datasets : [
+		{
+			  label: "Opened Issues",
+				<%= raw red_color %>
+        data: <%= raw @priorities.map{|priority| 
+        	
+        	count = 0
+        	@open_issues.each{|p| 
+						count += p["total"] if p["closed"] == "f" and priority.id == p["priority_id"]
+        	}
+
+        	count
+
+        }.to_json %>
+		}
+
+	]};
+
+
+
 	//Chart left
 	var labels_1 = <%= raw @issues_last_days[:dates].to_json %>;
 	var chart_left_data = {
@@ -116,8 +139,7 @@ green_color = 	'fillColor : "rgba(92,184,92,0.5)",
 			label: "Opened Issues",
 			<%= raw red_color %>
 			data : <%= raw @issues_last_days[:created].to_json %>,
-		},
-
+		}
 	]};
 
 
@@ -129,12 +151,12 @@ green_color = 	'fillColor : "rgba(92,184,92,0.5)",
     datasets: [
         {
             label: "Closed Issues",
-			<%= raw green_color %>
+						<%= raw green_color %>
             data: <%= raw @priorities.map{|priority| 
             	
             	total = 0
             	@issues_by_priority.each{|p| 
-					total += p["total"] if p["closed"] == "t" and priority.id == p["priority_id"]
+								total += p["total"] if p["closed"] == "t" and priority.id == p["priority_id"]
             	}
 
             	total
@@ -143,12 +165,12 @@ green_color = 	'fillColor : "rgba(92,184,92,0.5)",
         } ,
         {
             label: "Opened Issues",
-			<%= raw red_color %>
+						<%= raw red_color %>
             data: <%= raw @priorities.map{|priority| 
             	
             	total = 0
             	@issues_by_priority.each{|p| 
-					total += p["total"] if p["closed"] == "f" and priority.id == p["priority_id"]
+								total += p["total"] if p["closed"] == "f" and priority.id == p["priority_id"]
             	}
 
             	total
@@ -234,7 +256,7 @@ green_color = 	'fillColor : "rgba(92,184,92,0.5)",
 	};
 
 
-	window.onload = function(){
+	$(document).ready(function(){
 		var ctx = document.getElementById("chart_left").getContext("2d");
 		window.myLine = new Chart(ctx).Line(chart_left_data, {
 			responsive: false
@@ -254,7 +276,13 @@ green_color = 	'fillColor : "rgba(92,184,92,0.5)",
 		window.myLine = new Chart(ctx4).Bar(chart_author_data, {
 		    barShowStroke: false
 		});
-	}
+
+		var ctx5 = document.getElementById("chart_open").getContext("2d");
+		window.myLine = new Chart(ctx5).Bar(chart_open_issues, {
+			barShowStroke: false
+		});
+
+	});
 
 
 </script>

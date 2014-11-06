@@ -106,7 +106,7 @@ class Stat < ActiveRecord::Base
 
 
   #issues opened/closed by date
-  def self.by_days(parameters)
+  def self.issues_by_days(parameters)
 
   	created = []
   	closed = []
@@ -163,7 +163,7 @@ class Stat < ActiveRecord::Base
 
 
 
-  def self.by_author(parameters)
+  def self.issues_by_author(parameters = {:begin_date => nil, :end_date => nil})
     count_and_group_by(:field => 'author_id',
                        :joins => User.table_name,
                        :begin_date  => parameters[:begin_date],
@@ -171,7 +171,7 @@ class Stat < ActiveRecord::Base
                        :project     => parameters[:project])
   end
 
-  def self.by_assigned_to(parameters)
+  def self.issues_by_assigned_to(parameters = {:begin_date => nil, :end_date => nil})
     count_and_group_by(:field => 'assigned_to_id',
                        :joins => User.table_name,
                        :begin_date  => parameters[:begin_date],
@@ -179,7 +179,7 @@ class Stat < ActiveRecord::Base
                        :project     => parameters[:project])
   end
 
-  def self.by_priority(parameters)
+  def self.issues_by_priority(parameters = {:begin_date => nil, :end_date => nil})
     count_and_group_by(:field => 'priority_id',
                        :joins => IssuePriority.table_name,
                        :begin_date  => parameters[:begin_date],
@@ -187,7 +187,7 @@ class Stat < ActiveRecord::Base
                        :project     => parameters[:project])
   end
 
-  def self.by_tracker(parameters)
+  def self.issues_by_tracker(parameters = {:begin_date => nil, :end_date => nil})
     count_and_group_by(:field => 'tracker_id',
                        :joins => Tracker.table_name,
                        :begin_date  => parameters[:begin_date],

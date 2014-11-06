@@ -15,6 +15,8 @@
 	labels = [:stats_label_begining_of_time, :stats_label_current_week, :stats_label_last_week,:stats_label_current_month, :stats_label_last_month]
 %>
 
+
+
 <div>
 	<%=link_to_function l(:stats_label_begining_of_time), "redirect(0)",class: ("selected" if params["time_filter"] == "all") %><br>
 	<%=link_to_function l(:stats_label_current_week), "redirect(1)",class: ("selected" if params["time_filter"] == "current_week") %><br>
@@ -23,10 +25,16 @@
 	<%=link_to_function l(:stats_label_last_month), "redirect(4)",class: ("selected" if params["time_filter"] == "last_month") %><br>
 </div>
 
+
+
+
 <div>
 	<h3><%= l(:label_project) %>:</h3>
 	<%= select_tag "cb_projects", options_from_collection_for_select(@projects, 'identifier', 'name', selected: params["project"])  %>
 </div>
+
+<br>
+<hr />
 
 <div>
 	<h3><%= l(:stats_label_legend) %>:</h3>
@@ -34,16 +42,20 @@
 	<br><br>
 	<div class="legend green"></div><div class="label green_label"><%= l(:stats_label_closed_issues)%></div>
 </div>
+<br><br>
 
+<% count=0; @open_issues.each{|issue| count+=issue["total"] if issue["closed"]=="f"} %>
 
-
-
+<div>
+	<h3><%= l(:stats_label_open_issues) %> (<%= count %>):</h3>
+	<canvas  id="chart_open" style="display: block; margin: -5 auto;" height="150" width="200"></canvas>
+</div>
 
 
 
 <script>
 	$(function(){
-		$( "#cb_projects" ).on( "click", function() {
+		$( "#cb_projects" ).on( "change", function() {
 		  window.location = "?project=" + $('#cb_projects option:selected').val() 
 		});
 	});

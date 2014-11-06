@@ -12,7 +12,7 @@ class StatsController < ApplicationController
     @s_project = get_project          #project to filter by
     parameters[:project] = @s_project
     
-    @open_issues = Issue.open.count
+    
   
   	@statuses = IssueStatus.all
   	@trackers = Tracker.all
@@ -24,11 +24,12 @@ class StatsController < ApplicationController
     @projects.insert(0, Project.new(identifier: "all_projects", name: l(:stats_all_projects))) # All projects label
 
 
-    @issues_by_tracker = Stat.by_tracker(parameters)
-  	@issues_by_priority = Stat.by_priority(parameters)
-  	@issues_by_assigned_to = Stat.by_assigned_to(parameters)
-  	@issues_by_author = Stat.by_author(parameters)
-  	@issues_last_days = Stat.by_days(parameters)
+    @open_issues = Stat.issues_by_priority()
+    @issues_by_tracker = Stat.issues_by_tracker(parameters)
+  	@issues_by_priority = Stat.issues_by_priority(parameters)
+  	@issues_by_assigned_to = Stat.issues_by_assigned_to(parameters)
+  	@issues_by_author = Stat.issues_by_author(parameters)
+  	@issues_last_days = Stat.issues_by_days(parameters)
   	
     @top5 = Stat.top5(parameters)
 
