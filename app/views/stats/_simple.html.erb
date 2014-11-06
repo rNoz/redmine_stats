@@ -1,5 +1,5 @@
 <% if @statuses.empty? or rows.empty? %>
-    <p><i><%=l(:label_no_data)%></i></p>
+    <p class="nodata"><%= l(:label_no_data) %></p>
 <% else %>
 <table class="list issue-report">
 <thead><tr>
