@@ -39,7 +39,7 @@ green_color = 	'fillColor : "rgba(92,184,92,0.5)",
 	<br />
 	
 	<h3><%=l(:field_assigned_to)%></h3><br>
-	<canvas style="display: block; margin: 0 auto;" id="chart_assignee"  width="400" height="150"></canvas><br>
+	<canvas style="display: block; margin: 0 auto;" id="chart_assignee"  width="400" height="250"></canvas><br>
 	<%= render :partial => 'simple', :locals => { :data => @issues_by_assigned_to, :field_name => "assigned_to_id", :rows => @assignees } %>
 	<br /> <br />
 	
@@ -65,7 +65,7 @@ green_color = 	'fillColor : "rgba(92,184,92,0.5)",
 					l(:field_author) 
 				end %>
 	</h3><br>
-	<canvas style="display: block; margin: 0 auto;" id="chart_author_project"  width="400" height="150"></canvas><br>
+	<canvas style="display: block; margin: 0 auto;" id="chart_author_project"  width="400" height="250"></canvas><br>
 	<%= 
 		if @s_project.nil? 
 			render :partial => 'simple', :locals => { :data => @issues_by_project, :field_name => "project_id", :rows => @projects } 
@@ -236,7 +236,7 @@ green_color = 	'fillColor : "rgba(92,184,92,0.5)",
 
 			
 
-	    labels: <%= raw @projects.map{|a| a.name }.to_json %>,
+	    labels: <%= raw @projects.map{|a| a.identifier[0..13] }.to_json %>,
 	    datasets: [
       {
         label: "Created Issues",

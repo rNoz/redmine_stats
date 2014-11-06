@@ -93,7 +93,7 @@ class Stat < ActiveRecord::Base
 				on t3.user_id = t4.id
 				where t1.assignable = 't' and t4.type = 'User'
 				group by t3.user_id").each do |row|
-					users << User.find(row["user_id"])
+					users << User.find(row[0])
 
 				end
 
@@ -168,13 +168,15 @@ class Stat < ActiveRecord::Base
                        :joins => Project.table_name,
                        :begin_date  => parameters[:begin_date],
                        :end_date    => parameters[:end_date],
-                       :project     => parameters[:project])
+                       :project     => parameters[:project],
+                       :limit 			=> 5)
     else
     		count_and_group_by(:field => 'author_id',
                        :joins => User.table_name,
                        :begin_date  => parameters[:begin_date],
                        :end_date    => parameters[:end_date],
-                       :project     => parameters[:project])
+                       :project     => parameters[:project],
+                       :limit 			=> 5)
     end
 
 
@@ -185,7 +187,8 @@ class Stat < ActiveRecord::Base
                        :joins => User.table_name,
                        :begin_date  => parameters[:begin_date],
                        :end_date    => parameters[:end_date],
-                       :project     => parameters[:project])
+                       :project     => parameters[:project],
+                       :limit 			=> 5)
   end
 
   def self.issues_by_priority(parameters = {:begin_date => nil, :end_date => nil})
@@ -210,11 +213,12 @@ class Stat < ActiveRecord::Base
 
   def self.count_and_group_by(options)
 
-    select_field = options.delete(:field)
-    joins = options.delete(:joins)
-    begin_date = options.delete(:begin_date)
-    end_date = options.delete(:end_date)
-    project = options.delete(:project)
+    select_field = options[:field]
+    joins = options[:joins]
+    begin_date = options[:begin_date]
+    end_date = options[:end_date]
+    project = options[:project]
+    limit = " LIMIT #{options[:limit]}" unless options[:limit].nil?
 
     #create the where clause
 
@@ -251,7 +255,7 @@ class Stat < ActiveRecord::Base
 				 where
 				 #{Issue.table_name}.status_id=#{IssueStatus.table_name}.id 
 				 and #{where}
-				 group by #{IssueStatus.table_name}.id, #{IssueStatus.table_name}.is_closed, j.id"
+				 group by #{IssueStatus.table_name}.id, #{IssueStatus.table_name}.is_closed, j.id #{limit}"
 
     
     # sql = "select s.id as status_id, 
