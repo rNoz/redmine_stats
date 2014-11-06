@@ -5,7 +5,8 @@ class StatsController < ApplicationController
 
   def index
 
-  	# check_filter
+    check_filter # check filters... if find set_filter variable should route to issues#index
+
     @dates = date_interval
     parameters = @dates               #dates to filter by
 
@@ -77,4 +78,19 @@ class StatsController < ApplicationController
     {begin_date: begin_date, end_date: end_date}
 
   end
+
+  def check_filter
+    if (params[:set_filter])
+      respond_to do |format|
+        if @field
+          format.html {}
+        else
+          format.html { redirect_to :controller => 'issues', :action => 'index', :params => params}
+        end
+      end
+    end
+  end
+
+
+
 end
