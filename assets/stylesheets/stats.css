@@ -33,3 +33,8 @@
 .red_label{
 	color:rgba(197,63,59,0.6);
 }
+
+.chart_footer{
+	font-size:8px;
+	color:CCC;
+}

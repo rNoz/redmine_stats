@@ -148,8 +148,8 @@ class Stat < ActiveRecord::Base
           dates << d.strftime("%A, %d") 
         else #project filter
           
-          created << @s_project.issues.created_on(d).count
-          closed << @s_project.issues.closed_on(d).count
+          created << project.issues.created_on(d).count
+          closed << project.issues.closed_on(d).count
           dates << d.strftime("%A, %d") 
         end
       end

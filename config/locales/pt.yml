@@ -19,3 +19,4 @@ pt:
   stats_label_open_issues:                          "Tarefas Abertas"
   stats_label_closed_issues:                        "Tarefas Fechadas"
   stats_label_legend:                               "Legenda"
+  stats_open_issues_chart_info:                     "Total de tarefas abertas desde sempre, nenhum filtro aplicado"
