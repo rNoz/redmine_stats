@@ -13,7 +13,6 @@ class StatsController < ApplicationController
     @s_project = get_project          #project to filter by
     parameters[:project] = @s_project
     
-    
   
   	@statuses = IssueStatus.all
   	@trackers = Tracker.all
@@ -39,7 +38,7 @@ class StatsController < ApplicationController
 
   def get_project
     p = get_project_identifier
-    return Project.where(identifier: get_project_identifier).first if p != nil
+    return Project.where(identifier: get_project_identifier).first unless p.nil?
   end
 
 

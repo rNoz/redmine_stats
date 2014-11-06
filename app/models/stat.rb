@@ -16,10 +16,9 @@ class Stat < ActiveRecord::Base
     project = params[:project]
 
     #creating the query... this code is really bad....
-
-    unless project.nil?
-      where_pre = "#{Issue.table_name}.project_id = #{project.id}" 
-    end
+    
+    where_pre = "#{Issue.table_name}.project_id = #{project.id}"  unless project.nil?
+   
 
     
 
@@ -36,10 +35,6 @@ class Stat < ActiveRecord::Base
         where = ["#{where_pre} and #{Issue.table_name}.created_on >= ? AND #{Issue.table_name}.created_on < ?", begin_date, end_date] 
       end
     end
-
-    
-    
-
 
     Journal.joins(:issue).select("journalized_id, count(journalized_id) AS count").
     where(where).
@@ -166,7 +161,7 @@ class Stat < ActiveRecord::Base
 
 
   def self.issues_by_project(parameters = {:begin_date => nil, :end_date => nil})
-    project = parameters.delete(:project)
+    project = parameters[:project]
 
     if project.nil?
     		count_and_group_by(:field => 'project_id',
@@ -242,19 +237,35 @@ class Stat < ActiveRecord::Base
       
     # end of create the where clause
 
+    sql = " select #{IssueStatus.table_name}.id as status_id, 
+				 #{IssueStatus.table_name}.is_closed as closed, 
+				 j.id as #{select_field},
+				 count(#{Issue.table_name}.id) as total 
+				 from #{Issue.table_name}
+				 inner join #{Project.table_name}
+				 on #{Issue.table_name}.project_id=#{Project.table_name}.id
+				 inner join #{IssueStatus.table_name}
+				 on #{Issue.table_name}.status_id = #{IssueStatus.table_name}.id
+				 inner join #{joins} as j
+				 on #{Issue.table_name}.#{select_field} = j.id
+				 where
+				 #{Issue.table_name}.status_id=#{IssueStatus.table_name}.id 
+				 and #{where}
+				 group by #{IssueStatus.table_name}.id, #{IssueStatus.table_name}.is_closed, j.id"
+
     
-    sql = "select s.id as status_id, 
-            s.is_closed as closed, 
-            j.id as #{select_field},
-            count(#{Issue.table_name}.id) as total 
-          from 
-              #{Issue.table_name}, #{Project.table_name}, #{IssueStatus.table_name} s, #{joins} j
-          where 
-            #{Issue.table_name}.status_id=s.id 
-            and #{where}
-          group by s.id, s.is_closed, j.id"
+    # sql = "select s.id as status_id, 
+    #         s.is_closed as closed, 
+    #         j.id as #{select_field},
+    #         count(#{Issue.table_name}.id) as total 
+    #       from 
+    #           #{Issue.table_name}, #{Project.table_name}, #{IssueStatus.table_name} s, #{joins} j
+    #       where 
+    #         #{Issue.table_name}.status_id=s.id 
+    #         and #{where}
+    #       group by s.id, s.is_closed, j.id"
     
-    
+    # puts "mm #{sql}"
     ActiveRecord::Base.connection.select_all(sql)
   end
 
