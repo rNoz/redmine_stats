@@ -84,15 +84,17 @@ class Stat < ActiveRecord::Base
 
   	users = []
 
-		ActiveRecord::Base.connection.execute("select t3.user_id from roles as t1 
-				INNER JOIN member_roles as t2 on
-				t1.id = t2.role_id
-				inner join members as t3
-				on t3.id = t2.member_id
-				inner join users as t4
-				on t3.user_id = t4.id
-				where t1.assignable = 't' and t4.type = 'User'
-				group by t3.user_id").each do |row|
+		ActiveRecord::Base.connection.execute("select t3.user_id, count(t3.user_id) as c from roles as t1 
+        INNER JOIN member_roles as t2 on
+        t1.id = t2.role_id
+        inner join members as t3
+        on t3.id = t2.member_id
+        inner join users as t4
+        on t3.user_id = t4.id
+        where (t1.assignable = 't' or t1.assignable = 1) and t4.type = 'User'
+        group by t3.user_id
+        order by c desc
+        limit 5").each do |row|
 					users << User.find(row[0])
 
 				end
@@ -168,15 +170,13 @@ class Stat < ActiveRecord::Base
                        :joins => Project.table_name,
                        :begin_date  => parameters[:begin_date],
                        :end_date    => parameters[:end_date],
-                       :project     => parameters[:project],
-                       :limit 			=> 5)
+                       :project     => parameters[:project])
     else
     		count_and_group_by(:field => 'author_id',
                        :joins => User.table_name,
                        :begin_date  => parameters[:begin_date],
                        :end_date    => parameters[:end_date],
-                       :project     => parameters[:project],
-                       :limit 			=> 5)
+                       :project     => parameters[:project])
     end
 
 
@@ -187,8 +187,7 @@ class Stat < ActiveRecord::Base
                        :joins => User.table_name,
                        :begin_date  => parameters[:begin_date],
                        :end_date    => parameters[:end_date],
-                       :project     => parameters[:project],
-                       :limit 			=> 5)
+                       :project     => parameters[:project])
   end
 
   def self.issues_by_priority(parameters = {:begin_date => nil, :end_date => nil})
