@@ -30,8 +30,9 @@
 
 <div>
 	<h3><%= l(:label_project) %>:</h3>
-	<% 	projects_tmp = @projects.clone
-			projects_tmp.insert(0, Project.new(identifier: "all_projects", name: l(:stats_all_projects))) # All projects label 
+	<% 	projects_tmp = []
+			projects_tmp << Project.new(identifier: "all_projects", name: l(:stats_all_projects))
+			@projects.each do |p| projects_tmp << p end 
 	%>
 	<%= select_tag "cb_projects", options_from_collection_for_select(projects_tmp, 'identifier', 'name', selected: params["project"])  %>
 </div>
