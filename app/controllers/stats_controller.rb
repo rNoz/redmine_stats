@@ -20,7 +20,7 @@ class StatsController < ApplicationController
   	@assignees = Stat.assignable_users(@s_project)
   	@authors = Stat.authors(@s_project)
 
-    @projects = Project.all           #List os projects that can be used as a filter
+    @projects = Project.active           #List os projects that can be used as a filter
     
 
 
