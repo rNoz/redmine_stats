@@ -68,7 +68,7 @@ green_color = 	'fillColor : "rgba(92,184,92,0.5)",
 	<canvas style="display: block; margin: 0 auto;" id="chart_author_project"  width="400" height="250"></canvas><br>
 	<%= 
 		if @s_project.nil? 
-			render :partial => 'simple', :locals => { :data => @issues_by_project, :field_name => "project_id", :rows => @projects } 
+			render :partial => 'simple', :locals => { :data => @issues_by_project, :field_name => "project_id", :rows => @used_projects } 
 		else
 			render :partial => 'simple', :locals => { :data => @issues_by_author, :field_name => "author_id", :rows => @authors } 
 		end
@@ -236,12 +236,12 @@ green_color = 	'fillColor : "rgba(92,184,92,0.5)",
 
 			
 
-	    labels: <%= raw @projects.map{|a| a.identifier[0..13] }.to_json %>,
+	    labels: <%= raw @used_projects.map{|a| a.identifier[0..13] }.to_json %>,
 	    datasets: [
       {
         label: "Created Issues",
         <%= raw red_color %>
-        data: <%= raw @projects.map{|a| 
+        data: <%= raw @used_projects.map{|a| 
       	
         		total = 0
 
@@ -256,7 +256,7 @@ green_color = 	'fillColor : "rgba(92,184,92,0.5)",
       {
         label: "Closed Issues",
         <%= raw green_color %>
-        data: <%= raw @projects.map{|a| 
+        data: <%= raw @used_projects.map{|a| 
       	
         		total = 0
 

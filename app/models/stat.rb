@@ -170,13 +170,17 @@ class Stat < ActiveRecord::Base
                        :joins => Project.table_name,
                        :begin_date  => parameters[:begin_date],
                        :end_date    => parameters[:end_date],
-                       :project     => parameters[:project])
+                       :project     => parameters[:project],
+                       :limit       => 5,
+                       :order_by    => true)
     else
     		count_and_group_by(:field => 'author_id',
                        :joins => User.table_name,
                        :begin_date  => parameters[:begin_date],
                        :end_date    => parameters[:end_date],
-                       :project     => parameters[:project])
+                       :project     => parameters[:project],
+                       :limit       => 5,
+                       :order_by    => true)
     end
 
 
@@ -218,6 +222,7 @@ class Stat < ActiveRecord::Base
     end_date = options[:end_date]
     project = options[:project]
     limit = " LIMIT #{options[:limit]}" unless options[:limit].nil?
+    order_by = " ORDER BY total DESC" unless options[:order_by].nil?
 
     #create the where clause
 
@@ -254,7 +259,7 @@ class Stat < ActiveRecord::Base
 				 where
 				 #{Issue.table_name}.status_id=#{IssueStatus.table_name}.id 
 				 and #{where}
-				 group by #{IssueStatus.table_name}.id, #{IssueStatus.table_name}.is_closed, j.id #{limit}"
+				 group by #{IssueStatus.table_name}.id, #{IssueStatus.table_name}.is_closed, j.id #{order_by} #{limit} "
 
     
     # sql = "select s.id as status_id, 

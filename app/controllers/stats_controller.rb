@@ -17,7 +17,7 @@ class StatsController < ApplicationController
   	@statuses = IssueStatus.all
   	@trackers = Tracker.all
   	@priorities = IssuePriority.all.reverse
-  	@assignees = Stat.assignable_users(@s_project)
+  	#@assignees = Stat.assignable_users(@s_project)
   	@authors = Stat.authors(@s_project)
 
     @projects = Project.active           #List os projects that can be used as a filter
@@ -32,6 +32,9 @@ class StatsController < ApplicationController
   	@issues_last_days = Stat.issues_by_days(parameters)
   	
     @top5 = Stat.top5(parameters)
+
+    @assignees = @issues_by_assigned_to.map{|obj| User.find obj["assigned_to_id"]}.uniq
+    @used_projects = @issues_by_project.map{|obj| Project.find obj["project_id"]}.uniq
 
   end
 
