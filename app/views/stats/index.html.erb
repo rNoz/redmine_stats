@@ -232,6 +232,8 @@ green_color = 	'fillColor : "rgba(92,184,92,0.5)",
 
 	///project chart
 
+<% unless @used_projects.nil? %>
+
 	var chart_project_data = {
 
 			
@@ -270,7 +272,7 @@ green_color = 	'fillColor : "rgba(92,184,92,0.5)",
       }]
 	};
 
-
+<% end %>
 
 	//author chart
 	var chart_author_data = {

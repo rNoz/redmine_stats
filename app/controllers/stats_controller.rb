@@ -34,7 +34,7 @@ class StatsController < ApplicationController
     @top5 = Stat.top5(parameters)
 
     @assignees = @issues_by_assigned_to.map{|obj| User.find obj["assigned_to_id"]}.uniq
-    @used_projects = @issues_by_project.map{|obj| Project.find obj["project_id"]}.uniq
+    @used_projects = @issues_by_project.map{|obj| Project.find obj["project_id"]}.uniq if @s_project.nil?
 
   end
 
