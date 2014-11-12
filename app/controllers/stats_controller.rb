@@ -41,7 +41,7 @@ class StatsController < ApplicationController
 
   def get_project
     p = get_project_identifier
-    return ProjectProject.find_by_identifier get_project_identifier) unless p.nil?
+    return Project.find_by_identifier(get_project_identifier) unless p.nil?
   end
 
 
