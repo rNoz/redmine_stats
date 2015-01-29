@@ -9,8 +9,8 @@ You can also use it by project.
 ![screen1](https://dl.dropboxusercontent.com/u/3304230/do_not_delete/screen1.png)
 ![screen2](https://dl.dropboxusercontent.com/u/3304230/do_not_delete/screen2.png)
 
-==Installation:
-
+Installation:
+==
 
 You can use git clone or download the zip file.
 
@@ -25,7 +25,8 @@ Go to Administrator -> Roles & Permissions -> (Select the role you want to give 
 A new item in the top menu will appear to access the stats page
 
 
-==NOTE:
+NOTE:
+==
 
 This was developed specifically for the needs of a company So it may be a lot of "normal" features that an users may miss... I am opened to suggestions, to add new features and improve this plugin. Just let me know
 
