@@ -6,10 +6,8 @@ With redmine_stats you can have a global information about issues, and not proje
 
 You can also use it by project.
 
-link:https://dl.dropboxusercontent.com/u/3304230/do_not_delete/screen1.png
-
-link:https://dl.dropboxusercontent.com/u/3304230/do_not_delete/screen2.png
-
+![screen1](https://dl.dropboxusercontent.com/u/3304230/do_not_delete/screen1.png)
+![screen2](https://dl.dropboxusercontent.com/u/3304230/do_not_delete/screen2.png)
 
 ==Installation:
 
