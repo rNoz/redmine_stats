@@ -1,6 +1,7 @@
 class StatsController < ApplicationController
   unloadable
   
+  before_filter :validate_permission
 
 
   def index
@@ -38,6 +39,7 @@ class StatsController < ApplicationController
 
   end
 
+  private
 
   def get_project
     p = get_project_identifier
@@ -45,6 +47,9 @@ class StatsController < ApplicationController
   end
 
 
+  def validate_permission
+     User.current.allowed_to?(:access_statistics, nil, {global:true}) ? true : deny_access
+  end
 
   def get_project_identifier
       return params[:project] if !params[:project].nil? and params[:project] != "all_projects"
