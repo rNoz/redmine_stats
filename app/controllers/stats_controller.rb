@@ -48,7 +48,7 @@ class StatsController < ApplicationController
 
 
   def validate_permission
-     User.current.allowed_to?(:access_statistics, nil, {global:true}) ? true : deny_access
+     User.current.allowed_to?(:access_statistics, nil, {:global => true}) ? true : deny_access
   end
 
   def get_project_identifier
@@ -82,7 +82,7 @@ class StatsController < ApplicationController
       end
     end
 
-    {begin_date: begin_date, end_date: end_date}
+    {:begin_date => begin_date, :end_date => end_date}
 
   end
 

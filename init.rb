@@ -18,7 +18,7 @@ Redmine::Plugin.register :redmine_stats do
   menu :top_menu, :stats, { :controller => 'stats', :action => 'index', :time_filter => "current_week"}, 
   			:caption => :stats_label_stats, :after => :my_page,
   			:if => Proc.new {
-    					User.current.allowed_to?(:access_statistics, nil, {global:true})
+    					User.current.allowed_to?(:access_statistics, nil, {:global => true})
    			}
 
 

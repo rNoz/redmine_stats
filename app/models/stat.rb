@@ -156,7 +156,7 @@ class Stat < ActiveRecord::Base
 
   	
 
-  	{created:created, closed:closed, dates:dates}
+  	{:created => created, :closed => closed, :dates => dates}
 
   end
 
