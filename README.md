@@ -30,8 +30,3 @@ NOTE:
 
 This was developed specifically for the needs of a company So there may be a lot of "normal" features that users may miss... I am opened to suggestions, to add new features, and improve this plugin. Just let me know
 
-<<<<<<< HEAD
- 
-=======
- 
->>>>>>> FETCH_HEAD
