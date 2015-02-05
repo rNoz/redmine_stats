@@ -30,6 +30,9 @@ Compatibility:
 This plugin was created to work with redmine 2.5.2, Rails 3.2 and Ruby 2.1, older software versions may have problems
 Currently it is known to be incompatible with redmine 2.2 and older.
 
+You will also need a browser supporting html5 canvas. Check if your browser is compatible [here](http://caniuse.com/#feat=canvas)
+
+
 NOTE:
 ==
 
