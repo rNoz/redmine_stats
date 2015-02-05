@@ -24,6 +24,11 @@ Go to Administrator -> Roles & Permissions -> (Select the role you want to give 
 
 A new item in the top menu will appear to access the stats page
 
+Compatibility:
+==
+
+This plugin was created to work with redmine 2.5.2, Rails 3.2 and Ruby 2.1, older software versions may have problems
+Currently it is known to be incompatible with redmine 2.2 and older.
 
 NOTE:
 ==
