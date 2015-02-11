@@ -194,6 +194,14 @@ class Stat < ActiveRecord::Base
                        :project     => parameters[:project])
   end
 
+  def self.issues_by_author(parameters = {:begin_date => nil, :end_date => nil})
+    count_and_group_by(:field => 'author_id',
+                       :joins => User.table_name,
+                       :begin_date  => parameters[:begin_date],
+                       :end_date    => parameters[:end_date],
+                       :project     => parameters[:project])
+  end
+
   def self.issues_by_priority(parameters = {:begin_date => nil, :end_date => nil})
     count_and_group_by(:field => 'priority_id',
                        :joins => IssuePriority.table_name,
