@@ -18,11 +18,11 @@
 
 
 <div>
-	<%=link_to_function l(:stats_label_begining_of_time), "redirect(0)",class: ("selected" if params["time_filter"] == "all" || params["time_filter"].nil?) %><br>
-	<%=link_to_function l(:stats_label_current_week), "redirect(1)",class: ("selected" if params["time_filter"] == "current_week") %><br>
-	<%=link_to_function l(:stats_label_last_week), "redirect(2)",class: ("selected" if params["time_filter"] == "last_week") %><br>
-	<%=link_to_function l(:stats_label_current_month), "redirect(3)",class: ("selected" if params["time_filter"] == "current_month") %><br>
-	<%=link_to_function l(:stats_label_last_month), "redirect(4)",class: ("selected" if params["time_filter"] == "last_month") %><br>
+	<%=link_to_function l(:stats_label_begining_of_time), "redirect(0)",:class => ("selected" if params["time_filter"] == "all" || params["time_filter"].nil?) %><br>
+	<%=link_to_function l(:stats_label_current_week), "redirect(1)",:class => ("selected" if params["time_filter"] == "current_week") %><br>
+	<%=link_to_function l(:stats_label_last_week), "redirect(2)",:class => ("selected" if params["time_filter"] == "last_week") %><br>
+	<%=link_to_function l(:stats_label_current_month), "redirect(3)",:class => ("selected" if params["time_filter"] == "current_month") %><br>
+	<%=link_to_function l(:stats_label_last_month), "redirect(4)", :class => ("selected" if params["time_filter"] == "last_month") %><br>
 </div>
 
 
