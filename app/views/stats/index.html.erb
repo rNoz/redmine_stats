@@ -35,16 +35,18 @@ green_color = 	'fillColor : "rgba(92,184,92,0.5)",
 	<br>
 
 	<h3><%=l(:field_tracker)%></h3><br>
-	<%= render :partial => 'simple', :locals => { :data => @issues_by_tracker, :field_name => "tracker_id", :rows => @trackers } %>
+	<%= render :partial => 'simple', 
+			:locals => { :data => @issues_by_tracker, :field_name => "tracker_id", :rows => @trackers, :filter_by => "created_on" } %>
 	<br />
 	
 	<h3><%=l(:field_assigned_to)%></h3><br>
 	<canvas style="display: block; margin: 0 auto;" id="chart_assignee"  width="400" height="250"></canvas><br>
-	<%= render :partial => 'simple', :locals => { :data => @issues_by_assigned_to, :field_name => "assigned_to_id", :rows => @assignees } %>
+	<%= render :partial => 'simple', 
+			:locals => { :data => @issues_by_assigned_to, :field_name => "assigned_to_id", :rows => @assignees, :filter_by => "created_on" } %>
 	<br /> <br />
 	
 	<h3><%= l(:stats_label_more_active_issues)%></h3><br>
-	<%= render :partial => 'issues/list_simple', :locals => { :issues => @top5 } %>
+	<%= render :partial => 'issues/list_simple', :locals => { :issues => @top5, :filter_by => "created_on" } %>
 </div>
 
 
@@ -55,22 +57,20 @@ green_color = 	'fillColor : "rgba(92,184,92,0.5)",
 <div class="splitcontentright">
 	<h3><%=l(:field_priority)%></h3><br>
 	<canvas style="display: block; margin: 0 auto;" id="chart_right"  width="400" height="200"></canvas><br><br><br><br>
-	<%= render :partial => 'simple', :locals => { :data => @issues_by_priority, :field_name => "priority_id", :rows => @priorities } %>
+	<%= render :partial => 'simple', 
+			:locals => { :data => @issues_by_priority, :field_name => "priority_id", :rows => @priorities, :filter_by => "created_on" } %>
 	<br />
 	
-	<h3>
-		<%= if @s_project.nil? 
-					l(:field_project) 
-				else 
-					l(:field_author) 
-				end %>
-	</h3><br>
+	<h3><%= @s_project.nil?  ? l(:field_project) : l(:field_author) %></h3><br>
+	
 	<canvas style="display: block; margin: 0 auto;" id="chart_author_project"  width="400" height="250"></canvas><br>
 	<%= 
 		if @s_project.nil? 
-			render :partial => 'simple', :locals => { :data => @issues_by_project, :field_name => "project_id", :rows => @used_projects } 
+			render :partial => 'simple', 
+					:locals => { :data => @issues_by_project, :field_name => "project_id", :rows => @used_projects, :filter_by => "created_on" } 
 		else
-			render :partial => 'simple', :locals => { :data => @issues_by_author, :field_name => "author_id", :rows => @authors } 
+			render :partial => 'simple', 
+					:locals => { :data => @issues_by_author, :field_name => "author_id", :rows => @authors, :filter_by => "created_on" } 
 		end
 		%>
 	<br />

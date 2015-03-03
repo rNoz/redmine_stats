@@ -20,4 +20,14 @@ module StatsHelper
     parameters = {:set_filter => 1, :subproject_id => '!*', field => row.id}.merge(options)
     # project_issues_path(row.is_a?(Project) ? row : project, parameters)
   end
+
+
+  def format_date(datetime)
+    datetime.strftime "%Y-%m-%d"
+  end
+
+  def formated_dates(dates)
+    [format_date(dates[:begin_date]), format_date(dates[:end_date])]
+  end
+
 end
