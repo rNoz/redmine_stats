@@ -14,7 +14,11 @@ en:
   stats_label_filtering_between:										"Filtering betwween: "
   stats_label_and:														      and
   stats_label_open_issues_count:										"Currently Opened Issues: "
-  stats_all_projects:													      "All Projects"
+  stats_all_projects:													      "All Projects" 
+  stats_label_custom:                               "Custom"
+  stats_label_change:                               "Change"
+  stats_label_begin:                                "Begin"
+  stats_label_end:                                  "End"
 
   stats_label_open_issues:                          "Open Issues"
   stats_label_closed_issues:                        "Closed Issues"

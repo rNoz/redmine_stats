@@ -79,6 +79,11 @@ class StatsController < ApplicationController
           date -= 1.month
           begin_date = date.beginning_of_month
           end_date = date.end_of_month
+        when "custom"
+          b = params[:sdate].nil? ? Date.today : Date.parse(params[:sdate])
+          e = params[:edate].nil? ? Date.today : Date.parse(params[:edate])
+          begin_date  = b
+          end_date    =  e
       end
     end
 
