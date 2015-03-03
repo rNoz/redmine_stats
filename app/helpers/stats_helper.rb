@@ -23,11 +23,13 @@ module StatsHelper
 
 
   def format_date(datetime)
-    datetime.strftime "%Y-%m-%d"
+    datetime.strftime "%Y-%m-%d" unless datetime.nil?
   end
 
   def formated_dates(dates)
     [format_date(dates[:begin_date]), format_date(dates[:end_date])]
   end
+
+
 
 end
