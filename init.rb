@@ -6,7 +6,7 @@ Redmine::Plugin.register :redmine_stats do
   name 'Redmine Stats plugin'
   author 'Luis Fontes <mail.fontes@gmail.com>'
   description 'Plugin to display global statistics of projects'
-  version '0.0.2'
+  version '0.0.3'
   #url 'http://example.com/path/to/plugin'
   #author_url 'http://example.com/about'
 
