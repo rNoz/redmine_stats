@@ -35,7 +35,7 @@ class StatsController < ApplicationController
     @top5 = Stat.top5(parameters)
 
     @assignees = @issues_by_assigned_to.map{|obj| User.find_by_id obj["assigned_to_id"]}.compact.uniq
-    @used_projects = @issues_by_project.map{|obj| Project.find obj["project_id"]}.uniq if @s_project.nil?
+    @used_projects = @issues_by_project.map{|obj| Project.find_by_id obj["project_id"]}.uniq if @s_project.nil?
 
   end
 
@@ -52,7 +52,7 @@ class StatsController < ApplicationController
   end
 
   def get_project_identifier
-      return params[:project] if !params[:project].nil? and params[:project] != "all_projects"
+      return params[:project] if params[:project].present? and params[:project] != "all_projects"
   end
 
 

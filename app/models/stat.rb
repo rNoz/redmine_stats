@@ -17,7 +17,7 @@ class Stat < ActiveRecord::Base
 
     #creating the query... this code is really bad....
     
-    where_pre = "#{Issue.table_name}.project_id = #{project.id}"  unless project.nil? || project == "all_projects"
+    where_pre = "#{Issue.table_name}.project_id = #{project.id}"  if project.present? && project != "all_projects"
    
 
     
