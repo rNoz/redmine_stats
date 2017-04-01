@@ -77,7 +77,7 @@
 </div>
 <br><br>
 
-<% count=0; @open_issues.each{|issue| count+=issue["total"] if issue["closed"]=="f" or issue["closed"]== 0} %>
+<% count=0; @open_issues.each{|issue| count+=issue["total"].to_i if issue["closed"]=="f" or issue["closed"].to_i== 0} %>
 
 <div>
 	<h3><%= l(:stats_label_open_issues) %> (<%= count %>):</h3>

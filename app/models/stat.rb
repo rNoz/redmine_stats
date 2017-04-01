@@ -66,7 +66,8 @@ class Stat < ActiveRecord::Base
   	else
 
 			ActiveRecord::Base.connection.execute("SELECT count(author_id), author_id from issues where project_id = '#{project.id}' group by author_id  order by count(author_id) DESC LIMIT 5").each do |row|
-					data << User.find(row[1])
+					# returns of type: {"count"=>2, "author_id"=>1}
+					data << User.find(row["author_id"])
 			end
 		end
 

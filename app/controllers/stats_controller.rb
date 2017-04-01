@@ -52,7 +52,12 @@ class StatsController < ApplicationController
   end
 
   def get_project_identifier
+    p = Project.find(1)
+    if p.nil?
       return params[:project] if params[:project].present? and params[:project] != "all_projects"
+    else
+      return p[:identifier]
+    end
   end
 
 
